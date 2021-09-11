@@ -1,0 +1,96 @@
+Angular
+
+Saturday, May 8, 2021
+4:06 PM
+
+Install node.js
+Install angular cli
+Install types script 
+
+
+
+Angular is javascript binding framework which binds HTML UI and Javascript model, it helps to reduce lengthy code 
+It helps build SPA by using concept of routing
+
+Diff Angular JS and Angular?
+
+Angular JS	Angular
+JS 	TS
+Controller 	Component 
+No	Mobile Compliant
+No	CLI
+No	Lazy loading
+No	Server side
+
+Directives are angular syntaxes helps to attach behavior of DOM
+Types of directives
+Structural - change the structure of the DOM element Ex: ngFor
+Attribute - changes the behavior  depending on the result Ex: hidden, color change
+Component - user control , own template Ex: @Component
+
+What is npm and use of node_modules
+NPM: Node package manager, installs packages and stores in node_modules
+
+Package.json, references of library
+
+Typescript, superset of javascript. Adds types to javascript
+It supports OOPS concepts, can write classes, interfaces
+Converts to javascript at the time of compilation
+
+Angular CLI, command line interface
+CLI, can create projects , componets
+
+Components - writes binding code 
+Modules - logically groups components
+
+Importance of decorator - defines what kind of angular class it is.
+@Componet for Component
+@ngModule for Modules
+
+Annotations and metadata  - > same as decorator
+
+Template - html view of angular 
+
+Types of data binding in angular - expression or interpolation {{}}
+Property binding - component to view
+Event binding - click (), from view to component 
+Two way binding - component to view and view to component
+
+Angular architecture - 
+Template - nothing but view
+Component - view talks to component 
+Modules - group of components 
+Bindings - 
+Directives 
+Services - common logic 
+Dependency injection - 
+
+What is SPA
+Single page application:  load the UI once and don't reload again and again
+	Performance improvement
+To implement SPA, we use routing
+
+Routing, to define the navigation of the application
+
+Lazy loading: ondemand loading, loads only necessary files
+Divide project into separate modules, and use loadChildren
+
+What are services, shares common logic across angular projects
+
+Dependency injection - rather than creating instantiating from class itself ,
+Inject the service through constructor 
+
+Register the services in Providers, app.modules.ts
+decoupled,
+
+Difference ngserve - builds application in memory
+ and ng build  builds on harddisk-is for production
+Ngbuild --prod filag, make the application ready for production. Removes unnecessary files and minifies the code.
+
+
+		
+
+
+
+
+
