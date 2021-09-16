@@ -1,0 +1,69 @@
+
+#Our usual domains for eRoom
+$domains = @("")
+
+#Store your secrets here
+$mysecrets = @()
+
+#Get the current user
+$user = $env:UserName
+
+#URL (Must use TLS1.2)
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$PCSUnAuthAPIURL = 'https://pcs..com/PCS/webservices/SSWebservice.asmx'
+
+#Create the WebProxy variable
+$WebProxy = New-WebServiceProxy -uri $PCSUnAuthAPIURL -UseDefaultCredential
+
+#Provide password and PIN from Microsoft Authenticator
+$cpassword = Read-Host -Prompt "Enter password" -AsSecureString
+$password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($cpassword))
+$cPIN = Read-Host -Prompt "Enter PIN" -AsSecureString
+$PIN = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($cPIN))
+
+#Create your token. You need enough time left to use the PIN from Microsoft Authentication
+Write-Host "Wait for pop-up on your phone..."
+$result = $Webproxy.AuthenticateRADIUS($user, $password, '', "us..com", $PIN)
+
+	
+#Save the token to use for retrievals
+$token = $result.token
+
+#Loop through the domains to get your secrets
+foreach( $domain in $domains ) {
+
+	#Search for your credential to get the ID
+	$adminaccount = "$domain\a-$user"
+	Write-Host "Retrieving secret for $adminaccount..."
+	
+	$search = $webproxy.searchsecrets($token, $adminaccount, $false, $true)
+	$secretid = $search.SecretSummaries.SecretID
+
+	#Constants for PCS GetSecret Operator
+	$type = $WebProxy.GetType().GetMethod("GetSecret").GetParameters()[3].ParameterType.GetElementType()
+	$codeResponses = @()
+	$codeResponse1 = New-Object -TypeName $type
+	$codeResponse1.Comment = "Powershell Script on: $env:COMPUTERNAME"
+	$codeResponse1.ErrorCode = 'COMMENT'
+	$codeResponses += $codeResponse1
+	$codeResponse2 = New-Object -TypeName $type
+	$codeResponse2.ErrorCode = 'CHECKOUT'
+	$codeResponses += $codeResponse2
+	
+	#Get your secret
+	$getsecrets = $webproxy.getsecret($token, $secretid, $false, $codeResponses)
+	
+	#Store your secret
+	$mysecrets += New-Object PSObject -Property @{
+		AdminAccount = $adminaccount
+		AdminPassword = ($getsecrets.Secret.Items)[2].Value
+	}
+}
+
+#Output your secrets
+Write-Host ""
+foreach( $item in $mysecrets ){
+	$item.AdminAccount
+    $item.AdminPassword
+	Write-Host ""
+}
